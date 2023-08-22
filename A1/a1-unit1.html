@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Generate JSON File</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <style>
+    body{
+      background-color: lightgrey;
+    }
+
+    main{
+      max-width: 84vw;
+      background-color: white;
+      margin: 4vw auto;
+      padding: 8vw;
+    }
+
+    .buttons-container{
+      display:flex;
+      justify-content: center;
+      margin: 0 0 6vw 0;
+    }
+  </style>
+  <script>
+
+     let CSVDATA = [["NGO Name", "Website URL", "Trustworthy"]];
+     let JSONDATA = {};
+
+     function processData() {
+        preProcessCSV();
+        preProcessJSON();
+     }
+
+     const preProcessJSON = () => {
+
+        if (Object.entries(JSONDATA).length) {
+           JSONDATA = {};
+        };
+
+        [...rows].forEach(row => {
+           let name = row.firstElementChild.innerText;
+           let websiteUrl = row.querySelector("a").getAttribute("href");
+           let isTrustworthy = row.querySelector("input[type='checkbox']").checked ? 'YES': 'NO';
+           let jsonRow = {"name":name, "website_url": websiteUrl, "is_trustworthy": isTrustworthy};
+           JSONDATA = { ...JSONDATA, ...jsonRow };
+           console.log(JSONDATA);
+        });
+
+        return JSONDATA;
+     }
+
+     const preProcessCSV = () => {
+        if (CSVDATA) {
+           CSVDATA = [["NGO Name", "Website URL", "Trustworthy"]];
+        }
+
+        [...rows].forEach(row => {
+           let name = row.firstElementChild.innerText;
+           let websiteUrl = row.querySelector("a").getAttribute("href");
+           let isTrustworthy = row.querySelector("input[type='checkbox']").checked ? 'YES': 'NO';
+           let csvRow = [name, websiteUrl, isTrustworthy];
+           CSVDATA.push(csvRow);
+        });
+
+        return CSVDATA;
+     }
+
+     function generateJSON() {
+
+      // Convert JSON object to string
+      var jsonString = JSON.stringify(JSONDATA, null, 2);
+
+      // Create a blob with the JSON string
+      var blob = new Blob([jsonString], {type: "application/json"});
+
+      // Create a download link
+      var downloadLink = document.createElement("a");
+      downloadLink.href = URL.createObjectURL(blob);
+      downloadLink.download = "african_ngos_trustworthiness.json";
+      downloadLink.click();
+    }
+
+    function generateCSV() {
+
+      // Convert data array to CSV string
+      var csvString = "";
+
+      CSVDATA.forEach(row => {
+        csvString += row.join(",") + "\n";
+      });
+
+      // Create a blob with the CSV string
+      var blob = new Blob([csvString], {type: "text/csv"});
+
+      // Create a download link
+      var downloadLink = document.createElement("a");
+      downloadLink.href = URL.createObjectURL(blob);
+      downloadLink.download = "african_ngos_trustworthiness.csv";
+      downloadLink.click();
+    }
+
+    function generatePDF() {
+      // Create a new jsPDF instance
+      var doc = new jsPDF();
+
+      // Sample content to be added in the PDF
+      var content = "Hello, World!";
+
+      // Add content to the PDF document
+      doc.text(content, 10, 10);
+
+      // Save the PDF document
+      doc.save("document.pdf");
+
+    }
+
+
+  </script>
+
+</head>
+<body>
+
+   <main>
+      <h4>Deutschprüfung für das Niveau A1, Unit 1</h4>
+
+      <ol>
+        <li><h6>Notieren Sie die Ünterstutzung die Folgendes</h6></li>
+
+        <ol>
+          <li>Handtowel <input type="text"> </li>
+          <li>Butter Bread <input type="text"> </li>
+        </ol>
+
+        
+      </ol>
+      
+      
+      
+   </main>
+  <button class="btn btn-info" onclick="generateJSON()">Save and Submit Test</button>
+</body>
+<script>
+   var rows = document.querySelectorAll("tr:not(.header-row)");
+   processData();
+</script>
+</html>
