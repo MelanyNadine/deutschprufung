@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Generate JSON File</title>
+  <title>Deutschprüfung A1 - Unit 1</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
@@ -17,20 +17,48 @@
       padding: 8vw;
     }
 
+    p, li, td {
+      font-size: 1.3vw;
+      margin: 0
+    }
+
+    input {
+      margin: 0.3vw 1vw;
+      padding: 0;
+    }
+
     .buttons-container{
       display:flex;
       justify-content: center;
       margin: 0 0 6vw 0;
+    }
+
+    .subtitle {
+      font-weight: bold;
+      margin-top: 2vw;
+    }
+
+    .question {
+      font-weight: 700;
+      margin: 2vw 0;
+    }
+
+    .translations input{
+      width: 30vw;
+    }
+
+    #btn-submit{
+      margin: 0 auto 5vw auto;
     }
   </style>
   <script>
 
      let CSVDATA = [["NGO Name", "Website URL", "Trustworthy"]];
      let JSONDATA = {};
+     let PDFDATA = [];
 
      function processData() {
-        preProcessCSV();
-        preProcessJSON();
+        preProcessPDF();
      }
 
      const preProcessJSON = () => {
@@ -62,6 +90,19 @@
            let isTrustworthy = row.querySelector("input[type='checkbox']").checked ? 'YES': 'NO';
            let csvRow = [name, websiteUrl, isTrustworthy];
            CSVDATA.push(csvRow);
+        });
+
+        return CSVDATA;
+     }
+
+     const preProcessPDF = () => {
+        if (PDFDATA) {
+          PDFDATA = [];
+        };
+
+        [...answers].forEach(answer=> {
+           let ans = answer.value;
+           PDFDATA.push(ans);
         });
 
         return CSVDATA;
@@ -106,10 +147,13 @@
       var doc = new jsPDF();
 
       // Sample content to be added in the PDF
-      var content = "Hello, World!";
+      var content = `
+        La toalla de baño: 
+        El Pan de mantequilla:
+      `;
 
       // Add content to the PDF document
-      doc.text(content, 10, 10);
+      doc.text(PDFDATA, 10, 10);
 
       // Save the PDF document
       doc.save("document.pdf");
@@ -126,23 +170,87 @@
       <h4>Deutschprüfung für das Niveau A1, Unit 1</h4>
 
       <ol>
-        <li><h6>Notieren Sie die Ünterstutzung die Folgendes</h6></li>
+        <li class="question">Schreiben Sie die Übersetzung der folgenden Sätze</li>
 
         <ol>
-          <li>Handtowel <input type="text"> </li>
-          <li>Butter Bread <input type="text"> </li>
+          <li>La toalla de baño <input id="ans1" type="text" onchange="processData()"> </li>
+          <li>El Pan de mantequilla <input id="ans2"  type="text" onchange="processData()"> </li>
+          <li>El gato <input id="ans3"  type="text" onchange="processData()"> </li>
+          <li>La maleta <input id="ans4" type="text" onchange="processData()"> </li>
+          <li>La autopista <input id="ans5"  type="text" onchange="processData()"> </li>
+          <li>El tio <input id="ans6" type="text" onchange="processData()"> </li>
+          <li>Los fideos <input id="ans7" type="text" onchange="processData()"></li>
+          <li>La estrella <input id="ans8" type="text" onchange="processData()"></li>
         </ol>
 
+        <li class="question"> Ergänzen Sie die folgenden Dialoge</li>
+        
+        <p class="subtitle">Dialog 1</p>
+        <div class="dialog">
+          <p>Hallo Gustav, <input id="ans9"  class="w-25" type="text"> <p>
+          <p><input id="ans10"  class="w-25"  type="text"> geht's gut, und <input id="ans11" class="w-25"  type="text"> ?</p>
+        </div>
+
+        <p class="subtitle">Dialog 2</p>
+        <div class="dialog">
+          <p>Hallo! ich <input id="ans12" class="w-25"  type="text"> Maria, wie <input id="ans13" class="w-25"  type="text"> du? </p>
+          <p>Ich <input id="ans14" class="w-25"  type="text"> Nicklas. Wie <input id="ans15" class="w-25"  type="text"> er? </p>
+          <p>Er <input id="ans16"  class="w-25"  type="text"> Antoin </p>
+        <div>
+        
+        <p class="subtitle">Dialog 3</p>
+        <div class="dialog">
+          <p>Kennst du Frau Weber? Sie <input id="ans17"  type="text"> aus <input id="ans18" type="text" placeholder='Alemania'><p>
+          <p>Und du? <input id="ans19"  type="text" placeholder='de donde vienes tu'>?</p>
+          <p>Ich <input id="ans20"  type="text" placeholder='... de Hamburgo'>, aber <input id="ans21" type="text" placeholder='vivo en Austria'></p> 
+        </div>
+        
+        <li class="question">Ergänzen Sie die Tabelle.</li>
+        
+        <table>
+          <tbody>
+            <tr>
+              <td><input id="ans22" type="text" placeholder='quien'></td>
+              <td><input id="ans23" type="text" placeholder='que'></td>
+              <td><input id="ans24" type="text" placeholder='donde'></td>
+            </tr>
+            <tr>
+              <td><input id="ans25" type="text" placeholder='por que?'></td>
+              <td><input id="ans26" type="text" placeholder='porque'></td>
+              <td><input id="ans27" type="text" placeholder='cuales'></td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <li class="question">Übersetzen Sie die folgenden Sätze</li>
+        
+        <div class="translations">
+          <p><input id="ans28" type="text" placeholder='Estoy en Ecuador con mi tio'></p>
+          <p><input id="ans29" type="text" placeholder='Tengo una toalla de mano para la chica'></p>
+          <p><input id="ans30" type="text" placeholder='Maria esta con el gato'></p>
+          <p><input id="ans31" type="text" placeholder='Oscar tiene una maleta para el hombre'></p>
+          <p><input id="ans32" type="text" placeholder='Estas con la chica, ella tiene un gato para Jose'></p>
+        </div>
         
       </ol>
       
       
       
    </main>
-  <button class="btn btn-info" onclick="generateJSON()">Save and Submit Test</button>
+  <div class="d-flex"><button id="btn-submit" class="btn btn-success" onclick="generatePDF()">Save and Submit Test</button></div>
 </body>
 <script>
-   var rows = document.querySelectorAll("tr:not(.header-row)");
+   var answers = document.querySelectorAll("input");
+   var date = new Date();
+   var hours = date.getHours();
+   var minutes = date.getMinutes();
+
+   const timer = setTimeout(disableSubmit, 3600000);
+
+   function disableSubmit() {
+      document.getElementById("btn-submit").disabled = true;
+   }
+
    processData();
 </script>
 </html>
