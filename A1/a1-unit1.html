@@ -100,12 +100,11 @@
           PDFDATA = [];
         };
 
-        [...answers].forEach(answer=> {
+        [...answers].forEach((answer, index)=> {
            let ans = answer.value;
-           PDFDATA.push(ans);
+           let question = labels[index].innerText == '' ? answer.placeholder : labels[index].innerText;
+           PDFDATA.push(`${question} ${ans}`);
         });
-
-        return CSVDATA;
      }
 
      function generateJSON() {
@@ -147,13 +146,10 @@
       var doc = new jsPDF();
 
       // Sample content to be added in the PDF
-      var content = `
-        La toalla de baño: 
-        El Pan de mantequilla:
-      `;
+      var content = PDFDATA;
 
       // Add content to the PDF document
-      doc.text(PDFDATA, 10, 10);
+      doc.text(content, 20, 20);
 
       // Save the PDF document
       doc.save("document.pdf");
@@ -173,36 +169,36 @@
         <li class="question">Schreiben Sie die Übersetzung der folgenden Sätze</li>
 
         <ol>
-          <li>La toalla de baño <input id="ans1" type="text" onchange="processData()"> </li>
-          <li>El Pan de mantequilla <input id="ans2"  type="text" onchange="processData()"> </li>
-          <li>El gato <input id="ans3"  type="text" onchange="processData()"> </li>
-          <li>La maleta <input id="ans4" type="text" onchange="processData()"> </li>
-          <li>La autopista <input id="ans5"  type="text" onchange="processData()"> </li>
-          <li>El tio <input id="ans6" type="text" onchange="processData()"> </li>
-          <li>Los fideos <input id="ans7" type="text" onchange="processData()"></li>
-          <li>La estrella <input id="ans8" type="text" onchange="processData()"></li>
+          <li><label for="ans1">La toalla de baño</label><input id="ans1" type="text" onchange="processData()"> </li>
+          <li><label for="ans2">El Pan de mantequilla</label><input id="ans2"  type="text" onchange="processData()"> </li>
+          <li><label for="ans3">El gato</label><input id="ans3" type="text" onchange="processData()"> </li>
+          <li><label for="ans4">La maleta</label><input id="ans4" type="text" onchange="processData()"> </li>
+          <li><label for="ans5">La autopista</label><input id="ans5"  type="text" onchange="processData()"> </li>
+          <li><label for="ans6">El tio</label><input id="ans6" type="text" onchange="processData()"> </li>
+          <li><label for="ans7">Los fideos</label><input id="ans7" type="text" onchange="processData()"></li>
+          <li><label for="ans8">La estrella</label><input id="ans8" type="text" onchange="processData()"></li>
         </ol>
 
         <li class="question"> Ergänzen Sie die folgenden Dialoge</li>
         
         <p class="subtitle">Dialog 1</p>
         <div class="dialog">
-          <p>Hallo Gustav, <input id="ans9"  class="w-25" type="text" onchange="processData()"> <p>
-          <p><input id="ans10"  class="w-25"  type="text" onchange="processData()"> geht's gut, und <input id="ans11" class="w-25"  type="text" onchange="processData()"> ?</p>
+          <p><label for="ans9">Hallo Gustav,</label><input id="ans9" class="w-25" type="text" onchange="processData()"> </p>
+          <p><label for="ans10"><input id="ans10"  class="w-25"  type="text" onchange="processData()">geht's gut,</label><label for="ans11">und<input id="ans11" class="w-25"  type="text" onchange="processData()"> ?</label></p>
         </div>
 
         <p class="subtitle">Dialog 2</p>
         <div class="dialog">
-          <p>Hallo! ich <input id="ans12" class="w-25"  type="text" onchange="processData()"> Maria, wie <input id="ans13" class="w-25"  type="text" onchange="processData()"> du? </p>
-          <p>Ich <input id="ans14" class="w-25"  type="text" onchange="processData()"> Nicklas. Wie <input id="ans15" class="w-25"  type="text" onchange="processData()"> er? </p>
-          <p>Er <input id="ans16"  class="w-25"  type="text" onchange="processData()"> Antoin </p>
+          <p><label for="ans12">Hallo! ich</label><input id="ans12" class="w-25"  type="text" onchange="processData()"> <label for="ans13">Maria, wie<input id="ans13" class="w-25"  type="text" onchange="processData()"> du?</label></p>
+          <p><label for="ans14">Ich <input id="ans14" class="w-25"  type="text" onchange="processData()"> Nicklas.</label> <label for="ans15"> Wie <input id="ans15" class="w-25"  type="text" onchange="processData()"> er?</label></p>
+          <p><label for="ans16">Er <input id="ans16"  class="w-25"  type="text" onchange="processData()"> Antoin </label></p>
         <div>
         
         <p class="subtitle">Dialog 3</p>
         <div class="dialog">
-          <p>Kennst du Frau Weber? Sie <input id="ans17"  type="text" onchange="processData()"> aus <input id="ans18" type="text" placeholder='Alemania' onchange="processData()"><p>
-          <p>Und du? <input id="ans19"  type="text" placeholder='de donde vienes tu' onchange="processData()">?</p>
-          <p>Ich <input id="ans20"  type="text" placeholder='... de Hamburgo' onchange="processData()">, aber <input id="ans21" type="text" placeholder='vivo en Austria' onchange="processData()"></p> 
+          <p><label for="ans17">Kennst du Frau Weber? Sie</label><input id="ans17"  type="text" onchange="processData()"><label for="ans18">aus</label><input id="ans18" type="text" placeholder='Alemania' onchange="processData()"><p>
+          <p><label for="ans19">Und du?</label><input id="ans19"  type="text" placeholder='de donde vienes tu' onchange="processData()">?</p>
+          <p><label for="ans20">Ich</label><input id="ans20"  type="text" placeholder='... de Hamburgo' onchange="processData()"><label for="ans21">, aber</label><input id="ans21" type="text" placeholder='vivo en Austria' onchange="processData()"></p> 
         </div>
         
         <li class="question">Ergänzen Sie die Tabelle.</li>
@@ -210,14 +206,14 @@
         <table>
           <tbody>
             <tr>
-              <td><input id="ans22" type="text" placeholder='quien' onchange="processData()"></td>
-              <td><input id="ans23" type="text" placeholder='que' onchange="processData()"></td>
-              <td><input id="ans24" type="text" placeholder='donde' onchange="processData()"></td>
+              <td><label for="ans22"></label><input id="ans22" type="text" placeholder='quien' onchange="processData()"></td>
+              <td><label for="ans23"></label><input id="ans23" type="text" placeholder='que' onchange="processData()"></td>
+              <td><label for="ans24"></label><input id="ans24" type="text" placeholder='donde' onchange="processData()"></td>
             </tr>
             <tr>
-              <td><input id="ans25" type="text" placeholder='por que?' onchange="processData()"></td>
-              <td><input id="ans26" type="text" placeholder='porque' onchange="processData()"></td>
-              <td><input id="ans27" type="text" placeholder='cuales' onchange="processData()"></td>
+              <td><label for="ans25"></label><input id="ans25" type="text" placeholder='por que?' onchange="processData()"></td>
+              <td><label for="ans26"></label><input id="ans26" type="text" placeholder='porque' onchange="processData()"></td>
+              <td><label for="ans27"></label><input id="ans27" type="text" placeholder='cuales' onchange="processData()"></td>
             </tr>
           </tbody>
         </table>
@@ -225,11 +221,11 @@
         <li class="question">Übersetzen Sie die folgenden Sätze</li>
         
         <div class="translations">
-          <p><input id="ans28" type="text" placeholder='Estoy en Ecuador con mi tio' onchange="processData()"></p>
-          <p><input id="ans29" type="text" placeholder='Tengo una toalla de mano para la chica' onchange="processData()"></p>
-          <p><input id="ans30" type="text" placeholder='Maria esta con el gato' onchange="processData()"></p>
-          <p><input id="ans31" type="text" placeholder='Oscar tiene una maleta para el hombre' onchange="processData()"></p>
-          <p><input id="ans32" type="text" placeholder='Estas con la chica, ella tiene un gato para Jose' onchange="processData()"></p>
+          <p><label for="ans28"></label><input id="ans28" type="text" placeholder='Estoy en Ecuador con mi tio' onchange="processData()"></p>
+          <p><label for="ans29"></label><input id="ans29" type="text" placeholder='Tengo una toalla de mano para la chica' onchange="processData()"></p>
+          <p><label for="ans30"></label><input id="ans30" type="text" placeholder='Maria esta con el gato' onchange="processData()"></p>
+          <p><label for="ans31"></label><input id="ans31" type="text" placeholder='Oscar tiene una maleta para el hombre' onchange="processData()"></p>
+          <p><label for="ans32"></label><input id="ans32" type="text" placeholder='Estas con la chica, ella tiene un gato para Jose' onchange="processData()"></p>
         </div>
         
       </ol>
@@ -241,6 +237,8 @@
 </body>
 <script>
    var answers = document.querySelectorAll("input");
+   var labels = document.querySelectorAll("label");
+
    var date = new Date();
    var hours = date.getHours();
    var minutes = date.getMinutes();
