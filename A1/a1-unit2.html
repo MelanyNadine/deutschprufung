@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Deutschprüfung A1 - Unit 2</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <style>
+    body{
+      background-color: lightgrey;
+    }
+
+    main{
+      max-width: 84vw;
+      background-color: white;
+      margin: 4vw auto;
+      padding: 8vw;
+    }
+
+    p, li, td, b {
+      font-size: 1.3vw;
+      margin: 0
+    }
+
+    input {
+      margin: 0.3vw 1vw;
+      padding: 0;
+    }
+
+    fieldset{
+      font-size: 1.3vw;
+    }
+
+    legend{
+      font-size: 1.4vw;
+      font-weight: 500;
+      margin-top: 1.5vw;
+    }
+
+    .buttons-container{
+      display:flex;
+      justify-content: center;
+      margin: 0 0 6vw 0;
+    }
+
+    .subtitle {
+      font-weight: bold;
+      margin-top: 2vw;
+    }
+
+    .question {
+      font-weight: 700;
+      margin: 2vw 0 1vw 0;
+    }
+
+    .translations input{
+      width: 30vw;
+    }
+
+    #btn-submit{
+      margin: 0 auto 5vw auto;
+    }
+
+    .letter-pick input{
+      width: 7vw;
+    }
+
+    .short{
+      width: 7vw;
+    }
+
+  </style>
+  <script>
+
+     let CSVDATA = [["NGO Name", "Website URL", "Trustworthy"]];
+     let JSONDATA = {};
+     let PDFDATA = [];
+
+     function processData() {
+        preProcessPDF();
+     }
+
+     const preProcessJSON = () => {
+
+        if (Object.entries(JSONDATA).length) {
+           JSONDATA = {};
+        };
+
+        [...rows].forEach(row => {
+           let name = row.firstElementChild.innerText;
+           let websiteUrl = row.querySelector("a").getAttribute("href");
+           let isTrustworthy = row.querySelector("input[type='checkbox']").checked ? 'YES': 'NO';
+           let jsonRow = {"name":name, "website_url": websiteUrl, "is_trustworthy": isTrustworthy};
+           JSONDATA = { ...JSONDATA, ...jsonRow };
+           console.log(JSONDATA);
+        });
+
+        return JSONDATA;
+     }
+
+     const preProcessCSV = () => {
+        if (CSVDATA) {
+           CSVDATA = [["NGO Name", "Website URL", "Trustworthy"]];
+        }
+
+        [...rows].forEach(row => {
+           let name = row.firstElementChild.innerText;
+           let websiteUrl = row.querySelector("a").getAttribute("href");
+           let isTrustworthy = row.querySelector("input[type='checkbox']").checked ? 'YES': 'NO';
+           let csvRow = [name, websiteUrl, isTrustworthy];
+           CSVDATA.push(csvRow);
+        });
+
+        return CSVDATA;
+     }
+
+     const preProcessPDF = () => {
+        if (PDFDATA) {
+          PDFDATA = [];
+        };
+
+        let ans;
+        let question;
+
+        [...answers].forEach((answer, index)=> {
+
+          if (answer.type== 'radio'){
+            if (answer.checked){
+              ans = answer.name;
+              question = answer.value;
+            }else{
+              ans = null;
+              question = null;
+            }
+          }else{
+            ans = answer.value;
+            question = labels[index].innerText == '' ? answer.placeholder : labels[index].innerText;
+          }
+          
+          if(ans){
+            PDFDATA.push(`${question} ${ans}`);
+          }
+        });
+     }
+
+     function generateJSON() {
+
+      // Convert JSON object to string
+      var jsonString = JSON.stringify(JSONDATA, null, 2);
+
+      // Create a blob with the JSON string
+      var blob = new Blob([jsonString], {type: "application/json"});
+
+      // Create a download link
+      var downloadLink = document.createElement("a");
+      downloadLink.href = URL.createObjectURL(blob);
+      downloadLink.download = "african_ngos_trustworthiness.json";
+      downloadLink.click();
+    }
+
+    function generateCSV() {
+
+      // Convert data array to CSV string
+      var csvString = "";
+
+      CSVDATA.forEach(row => {
+        csvString += row.join(",") + "\n";
+      });
+
+      // Create a blob with the CSV string
+      var blob = new Blob([csvString], {type: "text/csv"});
+
+      // Create a download link
+      var downloadLink = document.createElement("a");
+      downloadLink.href = URL.createObjectURL(blob);
+      downloadLink.download = "african_ngos_trustworthiness.csv";
+      downloadLink.click();
+    }
+
+    function generatePDF() {
+      // Create a new jsPDF instance
+      var doc = new jsPDF();
+
+      // Sample content to be added in the PDF
+      var content = PDFDATA;
+
+      // Add content to the PDF document
+      doc.text(content, 20, 20);
+
+      // Save the PDF document
+      doc.save("document.pdf");
+
+    }
+
+
+  </script>
+
+</head>
+<body>
+
+   <main>
+      <h4>Deutschprüfung für das Niveau A1, Unit 2</h4>
+
+      <ol>
+        <li class="question">Klassifizieren Sie die folgenden Präpositionen: Akkusativ oder Dativ</li>
+
+        <fieldset>
+          <legend>mit</legend>
+        
+          <div>
+            <input type="radio" id="ans1" name="mit" value="Akkusativ"/>
+            <label for="ans1">Akkusativ</label>
+          
+            <input type="radio" id="ans2" name="mit" value="Dativ"/>
+            <label for="ans2">Dativ</label>
+          </div>
+        </fieldset>
+        
+        <fieldset>
+          <legend>durch</legend>
+        
+          <div>
+            <input type="radio" id="ans3" name="durch" value="Akkusativ"/>
+            <label for="ans3">Akkusativ</label>
+          
+            <input type="radio" id="ans4" name="durch" value="Dativ"/>
+            <label for="ans4">Dativ</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>bei</legend>
+        
+          <div>
+            <input type="radio" id="ans5" name="bei" value="Akkusativ"/>
+            <label for="ans5">Akkusativ</label>
+          
+            <input type="radio" id="ans6" name="bei" value="Dativ"/>
+            <label for="ans6">Dativ</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>aus</legend>
+        
+          <div>
+            <input type="radio" id="ans7" name="aus" value="Akkusativ"/>
+            <label for="ans7">Akkusativ</label>
+          
+            <input type="radio" id="ans8" name="aus" value="Dativ"/>
+            <label for="ans8">Dativ</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>ohne</legend>
+        
+          <div>
+            <input type="radio" id="ans9" name="ohne" value="Akkusativ"/>
+            <label for="ans9">Akkusativ</label>
+          
+            <input type="radio" id="ans10" name="ohne" value="Dativ"/>
+            <label for="ans10">Dativ</label>
+          </div>
+        </fieldset>
+
+        <li class="question">Was machen die Personen gern? Ergänzen Sie die Verben in der richtigen Form.</li>
+
+        <div><img width="90%" src="./img/quest1.png"></div>
+
+        <b>ANSWERS:</b>
+        <p><label for="ans11">1.</label><input type="text" onchange="processData()"></p>
+        <p><label for="ans12">2.</label><input type="text" onchange="processData()"></p>
+        <p><label for="ans13">3.</label><input type="text" onchange="processData()"></p>
+        <p><label for="ans14">4.</label><input type="text" onchange="processData()"></p>
+        <p><label for="ans15">5.</label><input type="text" onchange="processData()"></p>
+        
+        <li class="question">Wie geht die Reihe weiter? Schreiben Sie.</li>
+        <p>Montag,</p>
+        <table>
+          <tbody>
+            <tr>
+              <td><label for="ans16"></label><input id="ans22" type="text" placeholder='martes' onchange="processData()"></td>
+              <td><label for="ans17"></label><input id="ans23" type="text" placeholder='miércoles' onchange="processData()"></td>
+              <td><label for="ans18"></label><input id="ans24" type="text" placeholder='jueves' onchange="processData()"></td>
+            </tr>
+            <tr>
+              <td><label for="ans19"></label><input id="ans25" type="text" placeholder='viernes' onchange="processData()"></td>
+              <td><label for="ans20"></label><input id="ans26" type="text" placeholder='sábado' onchange="processData()"></td>
+              <td><label for="ans21"></label><input id="ans27" type="text" placeholder='domingo' onchange="processData()"></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <li class="question">Ordnen Sie die Zahlen zu</li>
+
+        <div><img width="90%" src="./img/quest2.png"></div>
+        
+        <div class="letter-pick">
+          <p><label for="ans22">2.</label><input id="ans22" type="text" onchange="processData()"></p>
+          <p><label for="ans23">3.</label><input id="ans23" type="text" onchange="processData()"></p>
+          <p><label for="ans24">4.</label><input id="ans24" type="text" onchange="processData()"></p>
+          <p><label for="ans25">5.</label><input id="ans25" type="text" onchange="processData()"></p>
+          <p><label for="ans26">6.</label><input id="ans26" type="text" onchange="processData()"></p>
+          <p><label for="ans27">7.</label><input id="ans27" type="text" onchange="processData()"></p>
+        </div>
+
+        <li class="question">Schreiben Sie die Fragen.</li>
+        
+        <div class="translations">
+          <p><b>Beispiel:</b> Sie ● was ● von Beruf ● sein ● ? ANSWER: Was sind Sie von Beruf?</p>
+          <p><label for="ans28">Sie ● von Beruf ● sein ● Technikerin ● ?</label><input id="ans28" type="text" onchange="processData()"></p>
+          <p><label for="ans29">ihr ● am Sonntag ● frei ● haben ● ?</label><input id="ans29" type="text" onchange="processData()"></p>
+          <p><label for="ans30">du ● machen ● was ● am Samstag ● gern ● ?</label><input id="ans30" type="text" onchange="processData()"></p>
+          <p><label for="ans31">Herr Höflinger ● bei Taxi Zentral ● arbeiten ● ?</label><input id="ans31" type="text" onchange="processData()"></p>
+          <p><label for="ans32">du ● um 18 Uhr ● Fußball ● spielen ● ?</label><input id="ans32" type="text" onchange="processData()"></p>
+        </div>
+        
+        <li class="question">Lesen Sie und ergänzen Sie das Formular mit den Daten.</li>
+
+        <div><img width="90%" src="./img/quest3.png"></div>
+        
+        <div>
+          <p><label for="ans22">Vorname</label><input id="ans22" type="text" onchange="processData()"></p>
+          <p><label for="ans23">Nachname</label><input id="ans23" type="text" onchange="processData()"></p>
+          <p><label for="ans24">Geburtsdatum</label><input id="ans24" type="text" onchange="processData()"></p>
+          <p><label for="ans25">Wohnort</label><input id="ans25" type="text" onchange="processData()"></p>
+          <p><label for="ans26">Beruf</label><input id="ans26" type="text" onchange="processData()"></p>
+          <p><label for="ans27">Hobbys</label><input id="ans27" type="text" onchange="processData()"></p>
+        </div>
+
+        <li class="question">Ergänzen Sie die Artikel und den Plural.</li>
+        
+        <div>
+          <p>
+            <input class="short" id="ans28" type="text" onchange="processData()"><label for="ans28">Buch;</label>
+            <label for="ans29"></label><input id="ans29" type="text" placeholder="Libros" onchange="processData()">
+          </p>
+          <p>
+            <input class="short" id="ans30" type="text" onchange="processData()"><label for="ans30">Tag;</label>
+            <label for="ans31"></label><input id="ans31" type="text" placeholder="Días" onchange="processData()">
+          </p>
+          <p>
+            <input class="short" id="ans32" type="text" onchange="processData()"><label for="ans32">Firma;</label>
+            <label for="ans33"></label><input id="ans33" type="text" placeholder="Empresas" onchange="processData()">
+          </p>
+          <p>
+            <input class="short" id="ans34" type="text" onchange="processData()"><label for="ans34">Artz;</label>
+            <label for="ans35"></label><input id="ans35" type="text" placeholder="Doctores" onchange="processData()">
+          </p>
+          <p>
+            <input class="short" id="ans36" type="text" onchange="processData()"><label for="ans36">Schwimmbad;</label>
+            <label for="ans37"></label><input id="ans37" type="text" placeholder="Piscinas" onchange="processData()">
+          </p>
+          <p>
+            <input class="short" id="ans38" type="text" onchange="processData()"><label for="ans38">Hobby;</label>
+            <label for="ans39"></label><input id="ans39" type="text" placeholder="Hobbies" onchange="processData()">
+          </p>
+          <p>
+            <input class="short" id="ans40" type="text" onchange="processData()"><label for="ans40">Kollege;</label>
+            <label for="ans41"></label><input id="ans41" type="text" placeholder="Colegas" onchange="processData()">
+          </p>
+        </div>
+
+        <li class="question">Übersetzen Sie die folgenden Sätze</li>
+        
+        <div class="translations">
+          <p><label for="ans42"></label><input id="ans42" type="text" placeholder='Mi colega está en Hamburgo con mi Hermana' onchange="processData()"></p>
+          <p><label for="ans43"></label><input id="ans43" type="text" placeholder='Mi papá está sin las llaves' onchange="processData()"></p>
+          <p><label for="ans44"></label><input id="ans44" type="text" placeholder='El color de mi gato es negro' onchange="processData()"></p>
+        </div>
+        
+      </ol>
+      
+      
+      
+   </main>
+  <div class="d-flex"><button id="btn-submit" class="btn btn-success" onclick="generatePDF()">Save and Submit Test</button></div>
+</body>
+<script>
+   var answers = document.querySelectorAll("input");
+   var labels = document.querySelectorAll("label");
+
+   console.log(answers[0].checked)
+
+   var date = new Date();
+   var hours = date.getHours();
+   var minutes = date.getMinutes();
+
+   const timer = setTimeout(disableSubmit, 3600000);
+
+   function disableSubmit() {
+      document.getElementById("btn-submit").disabled = true;
+   }
+
+   processData();
+</script>
+</html>
