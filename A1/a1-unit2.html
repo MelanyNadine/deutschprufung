@@ -4,7 +4,7 @@
   <title>Deutschprüfung A1 - Unit 2</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body{
       background-color: lightgrey;
@@ -179,16 +179,32 @@
 
     function generatePDF() {
       // Create a new jsPDF instance
-      var doc = new jsPDF();
+      let doc = new jsPDF();
+      let studentName = document.getElementById("studentName").value;
+      studentName = studentName.replace(" ", "_");
 
       // Sample content to be added in the PDF
-      var content = PDFDATA;
+      let content = PDFDATA;
+      let limit = 50;
+      let content1;
+      let content2;
+
+      doc.setFontSize(10);
 
       // Add content to the PDF document
-      doc.text(content, 20, 20);
-
+      
+      if (PDFDATA.length>limit){
+        content1 = content.slice(0, limit);
+        content2 = content.slice(limit, content.length-1);
+        doc.text(content1, 10, 10);
+        doc.addPage();
+        doc.text(content2,10,10);
+      }else{
+        doc.text(content,10,10);
+      }
+  
       // Save the PDF document
-      doc.save("document.pdf");
+      doc.save(`test2_${studentName}.pdf`);
 
     }
 
@@ -200,6 +216,8 @@
 
    <main>
       <h4>Deutschprüfung für das Niveau A1, Unit 2</h4>
+
+      <b>Vor- und Nachname:</b><input id="studentName" type="text">
 
       <ol>
         <li class="question">Klassifizieren Sie die folgenden Präpositionen: Akkusativ oder Dativ</li>
@@ -308,12 +326,12 @@
         <li class="question">Schreiben Sie die Fragen.</li>
         
         <div class="translations">
-          <p><b>Beispiel:</b> Sie ● was ● von Beruf ● sein ● ? ANSWER: Was sind Sie von Beruf?</p>
-          <p><label for="ans28">Sie ● von Beruf ● sein ● Technikerin ● ?</label><input id="ans28" type="text" onchange="processData()"></p>
-          <p><label for="ans29">ihr ● am Sonntag ● frei ● haben ● ?</label><input id="ans29" type="text" onchange="processData()"></p>
-          <p><label for="ans30">du ● machen ● was ● am Samstag ● gern ● ?</label><input id="ans30" type="text" onchange="processData()"></p>
-          <p><label for="ans31">Herr Höflinger ● bei Taxi Zentral ● arbeiten ● ?</label><input id="ans31" type="text" onchange="processData()"></p>
-          <p><label for="ans32">du ● um 18 Uhr ● Fußball ● spielen ● ?</label><input id="ans32" type="text" onchange="processData()"></p>
+          <p><b>Beispiel:</b> Sie / was / von Beruf / sein / ? ANSWER: Was sind Sie von Beruf?</p>
+          <p><label for="ans28">Sie / von Beruf / sein / Technikerin / ?</label><input id="ans28" type="text" onchange="processData()"></p>
+          <p><label for="ans29">ihr / am Sonntag / frei / haben / ?</label><input id="ans29" type="text" onchange="processData()"></p>
+          <p><label for="ans30">du / machen / was / am Samstag / gern / ?</label><input id="ans30" type="text" onchange="processData()"></p>
+          <p><label for="ans31">Herr Höflinger / bei Taxi Zentral / arbeiten / ?</label><input id="ans31" type="text" onchange="processData()"></p>
+          <p><label for="ans32">du / um 18 Uhr / Fußball / spielen / ?</label><input id="ans32" type="text" onchange="processData()"></p>
         </div>
         
         <li class="question">Lesen Sie und ergänzen Sie das Formular mit den Daten.</li>
@@ -378,10 +396,8 @@
   <div class="d-flex"><button id="btn-submit" class="btn btn-success" onclick="generatePDF()">Save and Submit Test</button></div>
 </body>
 <script>
-   var answers = document.querySelectorAll("input");
+   var answers = document.querySelectorAll('input:not([id="studentName"])');
    var labels = document.querySelectorAll("label");
-
-   console.log(answers[0].checked)
 
    var date = new Date();
    var hours = date.getHours();
