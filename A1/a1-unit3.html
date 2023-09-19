@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Deutschprüfung A1 - Einheit 3</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body{
+      background-color: lightgrey;
+    }
+
+    main{
+      max-width: 84vw;
+      background-color: white;
+      margin: 4vw auto;
+      padding: 8vw;
+    }
+
+    p, li, td, b {
+      font-size: 1.3vw;
+      margin: 0
+    }
+
+    input {
+      margin: 0.3vw 1vw;
+      padding: 0;
+    }
+
+    fieldset{
+      font-size: 1.3vw;
+    }
+
+    legend{
+      font-size: 1.4vw;
+      font-weight: 500;
+      margin-top: 1.5vw;
+    }
+
+    .buttons-container{
+      display:flex;
+      justify-content: center;
+      margin: 0 0 6vw 0;
+    }
+
+    .subtitle {
+      font-weight: bold;
+      margin-top: 2vw;
+    }
+
+    .question {
+      font-weight: 700;
+      margin: 2vw 0 1vw 0;
+    }
+
+    .translations input{
+      width: 30vw;
+    }
+
+    #btn-submit{
+      margin: 0 auto 5vw auto;
+    }
+
+    .letter-pick input{
+      width: 7vw;
+    }
+
+    .short{
+      width: 7vw;
+    }
+
+    .question3 input{
+      width: 3vw;
+    }
+
+    .translations input{
+      width: 50vw;
+    }
+  </style>
+  <script>
+
+     let CSVDATA = [["NGO Name", "Website URL", "Trustworthy"]];
+     let JSONDATA = {};
+     let PDFDATA = [];
+
+     function processData() {
+        preProcessPDF();
+     }
+
+     const preProcessJSON = () => {
+
+        if (Object.entries(JSONDATA).length) {
+           JSONDATA = {};
+        };
+
+        [...rows].forEach(row => {
+           let name = row.firstElementChild.innerText;
+           let websiteUrl = row.querySelector("a").getAttribute("href");
+           let isTrustworthy = row.querySelector("input[type='checkbox']").checked ? 'YES': 'NO';
+           let jsonRow = {"name":name, "website_url": websiteUrl, "is_trustworthy": isTrustworthy};
+           JSONDATA = { ...JSONDATA, ...jsonRow };
+           console.log(JSONDATA);
+        });
+
+        return JSONDATA;
+     }
+
+     const preProcessCSV = () => {
+        if (CSVDATA) {
+           CSVDATA = [["NGO Name", "Website URL", "Trustworthy"]];
+        }
+
+        [...rows].forEach(row => {
+           let name = row.firstElementChild.innerText;
+           let websiteUrl = row.querySelector("a").getAttribute("href");
+           let isTrustworthy = row.querySelector("input[type='checkbox']").checked ? 'YES': 'NO';
+           let csvRow = [name, websiteUrl, isTrustworthy];
+           CSVDATA.push(csvRow);
+        });
+
+        return CSVDATA;
+     }
+
+     const preProcessPDF = () => {
+        if (PDFDATA) {
+          PDFDATA = [];
+        };
+
+        let ans;
+        let question;
+
+        [...answers].forEach((answer, index)=> {
+
+          if (answer.type== 'radio'){
+            if (answer.checked){
+              ans = answer.name;
+              question = answer.value;
+            }else{
+              ans = null;
+              question = null;
+            }
+          }else{
+            ans = answer.value;
+            question = labels[index].innerText == '' ? answer.placeholder : labels[index].innerText;
+          }
+          
+          if(ans){
+            PDFDATA.push(`${question} ${ans}`);
+          }
+        });
+     }
+
+     function generateJSON() {
+
+      // Convert JSON object to string
+      var jsonString = JSON.stringify(JSONDATA, null, 2);
+
+      // Create a blob with the JSON string
+      var blob = new Blob([jsonString], {type: "application/json"});
+
+      // Create a download link
+      var downloadLink = document.createElement("a");
+      downloadLink.href = URL.createObjectURL(blob);
+      downloadLink.download = "african_ngos_trustworthiness.json";
+      downloadLink.click();
+    }
+
+    function generateCSV() {
+
+      // Convert data array to CSV string
+      var csvString = "";
+
+      CSVDATA.forEach(row => {
+        csvString += row.join(",") + "\n";
+      });
+
+      // Create a blob with the CSV string
+      var blob = new Blob([csvString], {type: "text/csv"});
+
+      // Create a download link
+      var downloadLink = document.createElement("a");
+      downloadLink.href = URL.createObjectURL(blob);
+      downloadLink.download = "african_ngos_trustworthiness.csv";
+      downloadLink.click();
+    }
+
+    function generatePDF() {
+      // Create a new jsPDF instance
+      let doc = new jsPDF();
+      let studentName = document.getElementById("studentName").value;
+      studentName = studentName.replace(" ", "_");
+
+      // Sample content to be added in the PDF
+      let content = PDFDATA;
+      let limit = 50;
+      let content1;
+      let content2;
+
+      doc.setFontSize(10);
+
+      // Add content to the PDF document
+      
+      if (PDFDATA.length>limit){
+        content1 = content.slice(0, limit);
+        content2 = content.slice(limit, content.length-1);
+        doc.text(content1, 10, 10);
+        doc.addPage();
+        doc.text(content2,10,10);
+      }else{
+        doc.text(content,10,10);
+      }
+  
+      // Save the PDF document
+      doc.save(`test2_${studentName}.pdf`);
+
+    }
+
+
+  </script>
+
+</head>
+<body>
+
+   <main>
+      <h4>Deutschprüfung für das Niveau A1, Einheit 3</h4>
+
+      <b>Vor- und Nachname:</b><input id="studentName" type="text">
+
+      <ol>
+        <li class="question">Klassifizieren Sie die folgenden Präpositionen: Akkusativ oder Dativ</li>
+
+        <fieldset>
+          <legend>gegenüber</legend>
+        
+          <div>
+            <input type="radio" id="ans1" name="gegenüber" value="Akkusativ"/>
+            <label for="ans1">Akkusativ</label>
+          
+            <input type="radio" id="ans2" name="gegenüber" value="Dativ"/>
+            <label for="ans2">Dativ</label>
+          </div>
+        </fieldset>
+        
+        <fieldset>
+          <legend>gegen</legend>
+        
+          <div>
+            <input type="radio" id="ans3" name="gegen" value="Akkusativ"/>
+            <label for="ans3">Akkusativ</label>
+          
+            <input type="radio" id="ans4" name="gegen" value="Dativ"/>
+            <label for="ans4">Dativ</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>in (räumlich)</legend>
+        
+          <div>
+            <input type="radio" id="ans5" name="in (räumlich)" value="Akkusativ"/>
+            <label for="ans5">Akkusativ</label>
+          
+            <input type="radio" id="ans6" name="in (räumlich)" value="Dativ"/>
+            <label for="ans6">Dativ</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>für</legend>
+        
+          <div>
+            <input type="radio" id="ans7" name="für" value="Akkusativ"/>
+            <label for="ans7">Akkusativ</label>
+          
+            <input type="radio" id="ans8" name="für" value="Dativ"/>
+            <label for="ans8">Dativ</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>außer</legend>
+        
+          <div>
+            <input type="radio" id="ans9" name="außer" value="Akkusativ"/>
+            <label for="ans9">Akkusativ</label>
+          
+            <input type="radio" id="ans10" name="außer" value="Dativ"/>
+            <label for="ans10">Dativ</label>
+          </div>
+        </fieldset>
+
+        <li class="question">Wie heißen die Verkehrsmittel? Schreiben Sie mit Artikel und Plural.</li>
+
+        <div><img width="90%" src="./img/quest1_3.png"></div>
+
+        <b>ANSWERS:</b>
+        <p>Beispiel: die S-Bahn; die S-Bahnen</p>
+        <p><label for="ans11">1.</label><input id="ans11" type="text" onchange="processData()"></p>
+        <p><label for="ans12">2.</label><input id="ans12" type="text" onchange="processData()"></p>
+        <p><label for="ans13">3.</label><input id="ans13" type="text" onchange="processData()"></p>
+        <p><label for="ans14">4.</label><input id="ans14" type="text" onchange="processData()"></p>
+        <p><label for="ans15">5.</label><input id="ans15" type="text" onchange="processData()"></p>
+        
+        <li class="question">Ordnen Sie den Dialog.</li>
+        
+        <div class="question3">
+          <p><label for="ans16">Nein, das ist das Rathaus. Dort ist die Frauenkirche. Sehen Sie?</label><input id="ans16" type="text" onchange="processData()"></p>
+          <p><label for="ans17">Gerne. Das macht 10,55 €.</label><input id="ans17" type="text" onchange="processData()"></p>
+          <p><label for="ans18">Hallo. Fahren Sie mich zum Hotel Pollinger, bitte.</label><input id="ans18" type="text" onchange="processData()"></p>
+          <p><label for="ans19">Oh ja, interessant. – Und ist das ein Park?</label><input id="ans19" type="text" onchange="processData()"></p>
+          <p>Guten Tag. 1</p>
+          <p><label for="ans20">Ah, sehr schön. Vielen Dank.</label><input id="ans20" type="text" onchange="processData()"></p>
+          <p><label for="ans21">Nein. Ist das die Frauenkirche</label><input id="ans21" type="text" onchange="processData()"></p>
+          <p><label for="ans22">Ja. Der Park heißt „Englischer Garten“. Das hier ist ein Fluss, die Isar. – Und hier ist
+            die Maria-Theresia-Straße. Da ist das Hotel.</label><input id="ans22" type="text" onchange="processData()"></p>
+          <p><label for="ans23">Hotel Pollinger. Okay. Kennen Sie München?</label><input id="ans23" type="text" onchange="processData()"></p>
+        </div>
+
+        <li class="question">Was ist richtig? Kreuzen Sie an</li>
+
+        <fieldset>
+          <legend>Köln ist ______ Stadt in Deutschland.</legend>
+        
+          <div>
+            <input type="radio" id="ans24" name="Köln ist ______ Stadt in Deutschland." value="ein"/>
+            <label for="ans24">ein</label>
+          
+            <input type="radio" id="ans25" name="Köln ist ______ Stadt in Deutschland." value="eine"/>
+            <label for="ans25">eine</label>
+
+            <input type="radio" id="ans26" name="Köln ist ______ Stadt in Deutschland." value="einen"/>
+            <label for="ans26">einen</label>
+
+            <input type="radio" id="ans27" name="Köln ist ______ Stadt in Deutschland." value="einem"/>
+            <label for="ans27">einem</label>
+
+            <input type="radio" id="ans28" name="Köln ist ______ Stadt in Deutschland." value="einer"/>
+            <label for="ans28">einer</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Das hier ist  ______ Markt. </legend>
+        
+          <div>
+            <input type="radio" id="ans29" name="Das hier ist  ______ Markt." value="ein"/>
+            <label for="ans29">ein</label>
+          
+            <input type="radio" id="ans30" name="Das hier ist  ______ Markt." value="eine"/>
+            <label for="ans30">eine</label>
+
+            <input type="radio" id="ans31" name="Das hier ist  ______ Markt." value="einen"/>
+            <label for="ans31">einen</label>
+
+            <input type="radio" id="ans32" name="Das hier ist  ______ Markt." value="einem"/>
+            <label for="ans32">einem</label>
+
+            <input type="radio" id="ans33" name="Das hier ist  ______ Markt." value="einer"/>
+            <label for="ans33">einer</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend> ______ Markt heißt Fischmarkt.</legend>
+        
+          <div>
+            <input type="radio" id="ans34" name="______ Markt heißt Fischmarkt." value="der"/>
+            <label for="ans34">der</label>
+          
+            <input type="radio" id="ans35" name="______ Markt heißt Fischmarkt." value="das"/>
+            <label for="ans35">das</label>
+
+            <input type="radio" id="ans36" name="______ Markt heißt Fischmarkt." value="die"/>
+            <label for="ans36">die</label>
+
+            <input type="radio" id="ans37" name="______ Markt heißt Fischmarkt." value="den"/>
+            <label for="ans37">den</label>
+
+            <input type="radio" id="ans38" name="______ Markt heißt Fischmarkt." value="dem"/>
+            <label for="ans38">dem</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>ist das  ______ Kirche? </legend>
+        
+          <div>
+            <input type="radio" id="ans39" name="ist das  ______ Kirche?" value="ein"/>
+            <label for="ans39">ein</label>
+          
+            <input type="radio" id="ans40" name="ist das  ______ Kirche?" value="eine"/>
+            <label for="ans40">eine</label>
+
+            <input type="radio" id="ans41" name="ist das  ______ Kirche?" value="einen"/>
+            <label for="ans41">einen</label>
+
+            <input type="radio" id="ans42" name="ist das  ______ Kirche?" value="einem"/>
+            <label for="ans42">einem</label>
+
+            <input type="radio" id="ans43" name="ist das  ______ Kirche?" value="einer"/>
+            <label for="ans43">einer</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Nein, das ist  ______ Bahnhof. </legend>
+        
+          <div>
+            <input type="radio" id="ans44" name="Nein, das ist  ______ Bahnhof." value="der"/>
+            <label for="ans44">der</label>
+          
+            <input type="radio" id="ans45" name="Nein, das ist  ______ Bahnhof." value="das"/>
+            <label for="ans45">das</label>
+
+            <input type="radio" id="ans46" name="Nein, das ist  ______ Bahnhof." value="die"/>
+            <label for="ans46">die</label>
+
+            <input type="radio" id="ans47" name="Nein, das ist  ______ Bahnhof." value="den"/>
+            <label for="ans47">den</label>
+
+            <input type="radio" id="ans48" name="Nein, das ist  ______ Bahnhof." value="dem"/>
+            <label for="ans48">dem</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Das ist ______ Museum. </legend>
+        
+          <div>
+            <input type="radio" id="ans49" name="Das ist ______ Museum." value="ein"/>
+            <label for="ans49">ein</label>
+          
+            <input type="radio" id="ans50" name="Das ist ______ Museum." value="eine"/>
+            <label for="ans50">eine</label>
+
+            <input type="radio" id="ans51" name="Das ist ______ Museum." value="einen"/>
+            <label for="ans51">einen</label>
+
+            <input type="radio" id="ans52" name="Das ist ______ Museum." value="einem"/>
+            <label for="ans52">einem</label>
+
+            <input type="radio" id="ans53" name="Das ist ______ Museum." value="einer"/>
+            <label for="ans53">einer</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend> ______ Museum ist sehr groß. </legend>
+        
+          <div>
+            <input type="radio" id="ans54" name="______ Museum ist sehr groß." value="der"/>
+            <label for="ans54">der</label>
+          
+            <input type="radio" id="ans55" name="______ Museum ist sehr groß." value="das"/>
+            <label for="ans55">das</label>
+
+            <input type="radio" id="ans56" name="______ Museum ist sehr groß." value="die"/>
+            <label for="ans56">die</label>
+
+            <input type="radio" id="ans57" name="______ Museum ist sehr groß." value="den"/>
+            <label for="ans57">den</label>
+
+            <input type="radio" id="ans58" name="______ Museum ist sehr groß." value="dem"/>
+            <label for="ans58">dem</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>ist das ______ Hotel?</legend>
+        
+          <div>
+            <input type="radio" id="ans59" name="ist das ______ Hotel?" value="ein"/>
+            <label for="ans59">ein</label>
+          
+            <input type="radio" id="ans60" name="ist das ______ Hotel?" value="eine"/>
+            <label for="ans60">eine</label>
+
+            <input type="radio" id="ans61" name="ist das ______ Hotel?" value="einen"/>
+            <label for="ans61">einen</label>
+
+            <input type="radio" id="ans62" name="ist das ______ Hotel?" value="einem"/>
+            <label for="ans62">einem</label>
+
+            <input type="radio" id="ans63" name="ist das ______ Hotel?" value="einer"/>
+            <label for="ans63">einer</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Nein, das ist  ______ Rathaus. </legend>
+        
+          <div>
+            <input type="radio" id="ans64" name="Nein, das ist  ______ Rathaus." value="der"/>
+            <label for="ans64">der</label>
+          
+            <input type="radio" id="ans65" name="Nein, das ist  ______ Rathaus." value="das"/>
+            <label for="ans65">das</label>
+
+            <input type="radio" id="ans66" name="Nein, das ist  ______ Rathaus." value="die"/>
+            <label for="ans66">die</label>
+
+            <input type="radio" id="ans67" name="Nein, das ist  ______ Rathaus." value="den"/>
+            <label for="ans67">den</label>
+
+            <input type="radio" id="ans68" name="Nein, das ist  ______ Rathaus." value="dem"/>
+            <label for="ans68">dem</label>
+          </div>
+        </fieldset>
+        
+        <li class="question">Ergänzen Sie den richtigen Artikel.</li>
+
+        <div><img width="90%" src="./img/quest2_3.png"></div>
+        
+        <div>
+          <p><label for="ans69">1.</label><input id="ans69" type="text" onchange="processData()"></p>
+          <p><label for="ans70">2.</label><input id="ans70" type="text" onchange="processData()"></p>
+          <p><label for="ans71">3.</label><input id="ans71" type="text" onchange="processData()"></p>
+          <p><label for="ans72">4.</label><input id="ans72" type="text" onchange="processData()"></p>
+          <p><label for="ans73">5.</label><input id="ans73" type="text" onchange="processData()"></p>
+          <p><label for="ans74">6.</label><input id="ans74" type="text" onchange="processData()"></p>
+        </div>
+
+        <li class="question">Wohin wollen die Personen?</li>
+
+        <div><img width="90%" src="./img/quest3_3.png"></div>
+        
+        <div>
+          <p><label for="ans75">1.</label><input id="ans75" type="text" onchange="processData()"></p>
+          <p><label for="ans76">2.</label><input id="ans76" type="text" onchange="processData()"></p>
+          <p><label for="ans77">3.</label><input id="ans77" type="text" onchange="processData()"></p>
+        </div>
+
+        <li class="question">Imperativ mit Sie. Schreiben Sie Sätze.</li>
+
+        <div><img width="90%" src="./img/quest4_3.png"></div>
+        
+        <div>
+          <p><label for="ans78">1.</label><input id="ans78" type="text" onchange="processData()"></p>
+          <p><label for="ans79">2.</label><input id="ans79" type="text" onchange="processData()"></p>
+          <p><label for="ans80">3.</label><input id="ans80" type="text" onchange="processData()"></p>
+          <p><label for="ans81">4.</label><input id="ans81" type="text" onchange="processData()"></p>
+          <p><label for="ans82">5.</label><input id="ans82" type="text" onchange="processData()"></p>
+          <p><label for="ans83">6.</label><input id="ans83" type="text" onchange="processData()"></p>
+        </div>
+
+        <li class="question">Übersetzen Sie die folgenden Sätze</li>
+        
+        <div class="translations">
+          <p><label for="ans84"></label><input id="ans84" type="text" placeholder='Mi colega está en el parque con mi gato y mi amiga.' onchange="processData()"></p>
+          <p><label for="ans85"></label><input id="ans85" type="text" placeholder='Estoy en la iglesia con mis amigos' onchange="processData()"></p>
+          <p><label for="ans86"></label><input id="ans86" type="text" placeholder='El color del gato de mi tío es blanco' onchange="processData()"></p>
+          <p><label for="ans87"></label><input id="ans87" type="text" placeholder='Mi mamá está ene el puerto con mi papá' onchange="processData()"></p>
+          <p><label for="ans88"></label><input id="ans88" type="text" placeholder='Estoy en la estación de trenes. Tengo un gato para mi mamá' onchange="processData()"></p>
+        </div>
+        
+      </ol>
+      
+      
+      
+   </main>
+  <div class="d-flex"><button id="btn-submit" class="btn btn-success" onclick="generatePDF()">Save and Submit Test</button></div>
+</body>
+<script>
+   var answers = document.querySelectorAll('input:not([id="studentName"])');
+   var labels = document.querySelectorAll("label");
+
+   var date = new Date();
+   var hours = date.getHours();
+   var minutes = date.getMinutes();
+
+   const timer = setTimeout(disableSubmit, 3600000);
+
+   function disableSubmit() {
+      document.getElementById("btn-submit").disabled = true;
+   }
+
+   processData();
+</script>
+</html>
