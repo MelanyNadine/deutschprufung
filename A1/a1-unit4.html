@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Deutschprüfung A1 - Einheit 4</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body{
+      background-color: lightgrey;
+    }
+
+    main{
+      max-width: 84vw;
+      background-color: white;
+      margin: 4vw auto;
+      padding: 8vw;
+    }
+
+    p, li, td, b {
+      font-size: 1.3vw;
+      margin: 0
+    }
+
+    input {
+      margin: 0.3vw 1vw;
+      padding: 0;
+    }
+
+    fieldset{
+      font-size: 1.3vw;
+    }
+
+    legend{
+      font-size: 1.4vw;
+      font-weight: 500;
+      margin-top: 1.5vw;
+    }
+
+    .buttons-container{
+      display:flex;
+      justify-content: center;
+      margin: 0 0 6vw 0;
+    }
+
+    .subtitle {
+      font-weight: bold;
+      margin-top: 2vw;
+    }
+
+    .question {
+      font-weight: 700;
+      margin: 2vw 0 1vw 0;
+    }
+
+    .translations input{
+      width: 30vw;
+    }
+
+    #btn-submit{
+      margin: 0 auto 5vw auto;
+    }
+
+    .letter-pick input{
+      width: 7vw;
+    }
+
+    .short{
+      width: 7vw;
+    }
+
+    .numbers-input input{
+      width: 3vw;
+    }
+
+    .translations input{
+      width: 50vw;
+    }
+
+    .classification-table input, th{
+      max-width: 10vw;
+      text-align: center;
+    }
+  </style>
+  <script>
+
+     let CSVDATA = [["NGO Name", "Website URL", "Trustworthy"]];
+     let JSONDATA = {};
+     let PDFDATA = [];
+
+     function processData() {
+        preProcessPDF();
+     }
+
+     const preProcessJSON = () => {
+
+        if (Object.entries(JSONDATA).length) {
+           JSONDATA = {};
+        };
+
+        [...rows].forEach(row => {
+           let name = row.firstElementChild.innerText;
+           let websiteUrl = row.querySelector("a").getAttribute("href");
+           let isTrustworthy = row.querySelector("input[type='checkbox']").checked ? 'YES': 'NO';
+           let jsonRow = {"name":name, "website_url": websiteUrl, "is_trustworthy": isTrustworthy};
+           JSONDATA = { ...JSONDATA, ...jsonRow };
+           console.log(JSONDATA);
+        });
+
+        return JSONDATA;
+     }
+
+     const preProcessCSV = () => {
+        if (CSVDATA) {
+           CSVDATA = [["NGO Name", "Website URL", "Trustworthy"]];
+        }
+
+        [...rows].forEach(row => {
+           let name = row.firstElementChild.innerText;
+           let websiteUrl = row.querySelector("a").getAttribute("href");
+           let isTrustworthy = row.querySelector("input[type='checkbox']").checked ? 'YES': 'NO';
+           let csvRow = [name, websiteUrl, isTrustworthy];
+           CSVDATA.push(csvRow);
+        });
+
+        return CSVDATA;
+     }
+
+     const preProcessPDF = () => {
+        if (PDFDATA) {
+          PDFDATA = [];
+        };
+
+        let ans;
+        let question;
+
+        [...answers].forEach((answer, index)=> {
+
+          if (answer.type== 'radio'){
+            if (answer.checked){
+              ans = answer.name;
+              question = answer.value;
+            }else{
+              ans = null;
+              question = null;
+            }
+          }else{
+            ans = answer.value;
+            question = labels[index].innerText == '' ? answer.placeholder : labels[index].innerText;
+          }
+          
+          if(ans){
+            PDFDATA.push(`${question} ${ans}`);
+          }
+        });
+     }
+
+     function generateJSON() {
+
+      // Convert JSON object to string
+      var jsonString = JSON.stringify(JSONDATA, null, 2);
+
+      // Create a blob with the JSON string
+      var blob = new Blob([jsonString], {type: "application/json"});
+
+      // Create a download link
+      var downloadLink = document.createElement("a");
+      downloadLink.href = URL.createObjectURL(blob);
+      downloadLink.download = "african_ngos_trustworthiness.json";
+      downloadLink.click();
+    }
+
+    function generateCSV() {
+
+      // Convert data array to CSV string
+      var csvString = "";
+
+      CSVDATA.forEach(row => {
+        csvString += row.join(",") + "\n";
+      });
+
+      // Create a blob with the CSV string
+      var blob = new Blob([csvString], {type: "text/csv"});
+
+      // Create a download link
+      var downloadLink = document.createElement("a");
+      downloadLink.href = URL.createObjectURL(blob);
+      downloadLink.download = "african_ngos_trustworthiness.csv";
+      downloadLink.click();
+    }
+
+    function generatePDF() {
+      // Create a new jsPDF instance
+      let doc = new jsPDF();
+      let studentName = document.getElementById("studentName").value;
+      studentName = studentName.replace(" ", "_");
+
+      // Sample content to be added in the PDF
+      let content = PDFDATA;
+      let limit = 50;
+      let content1;
+      let content2;
+
+      doc.setFontSize(10);
+
+      // Add content to the PDF document
+      
+      if (PDFDATA.length>limit){
+        content1 = content.slice(0, limit);
+        content2 = content.slice(limit, content.length-1);
+        doc.text(content1, 10, 10);
+        doc.addPage();
+        doc.text(content2,10,10);
+      }else{
+        doc.text(content,10,10);
+      }
+  
+      // Save the PDF document
+      doc.save(`test2_${studentName}.pdf`);
+
+    }
+
+
+  </script>
+
+</head>
+<body>
+
+   <main>
+      <h4>Deutschprüfung für das Niveau A1, Einheit 4</h4>
+
+      <b>Vor- und Nachname:</b><input id="studentName" type="text">
+
+      <ol>
+
+        <!-- ============================================---
+        <||                    QUESTION
+        <--- ============================================-->
+
+        <li class="question">Klassifizieren Sie die folgenden Präpositionen: Akkusativ oder Dativ</li>
+
+        <fieldset>
+          <legend>gegenüber</legend>
+        
+          <div>
+            <input type="radio" id="ans1" name="gegenüber" value="Akkusativ"/>
+            <label for="ans1">Akkusativ</label>
+          
+            <input type="radio" id="ans2" name="gegenüber" value="Dativ"/>
+            <label for="ans2">Dativ</label>
+          </div>
+        </fieldset>
+        
+        <fieldset>
+          <legend>gegen</legend>
+        
+          <div>
+            <input type="radio" id="ans3" name="gegen" value="Akkusativ"/>
+            <label for="ans3">Akkusativ</label>
+          
+            <input type="radio" id="ans4" name="gegen" value="Dativ"/>
+            <label for="ans4">Dativ</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>um</legend>
+        
+          <div>
+            <input type="radio" id="ans5" name="um" value="Akkusativ"/>
+            <label for="ans5">Akkusativ</label>
+          
+            <input type="radio" id="ans6" name="um" value="Dativ"/>
+            <label for="ans6">Dativ</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>in (räumlich)</legend>
+        
+          <div>
+            <input type="radio" id="ans7" name="in (räumlich)" value="Akkusativ"/>
+            <label for="ans7">Akkusativ</label>
+          
+            <input type="radio" id="ans8" name="in (räumlich)" value="Dativ"/>
+            <label for="ans8">Dativ</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>außerdem</legend>
+        
+          <div>
+            <input type="radio" id="ans9" name="außerdem" value="Akkusativ"/>
+            <label for="ans9">Akkusativ</label>
+          
+            <input type="radio" id="ans10" name="außerdem" value="Dativ"/>
+            <label for="ans10">Dativ</label>
+          </div>
+        </fieldset>
+
+
+        <!-- ============================================---
+        <||                    QUESTION
+        <--- ============================================-->
+
+        <li class="question">Wie heißen die Lebensmittel mit Artikel? Ordnen Sie zu.</li>
+
+        <div><img width="90%" src="./img/quest1_4.png"></div>
+        
+        <table class="classification-table">
+          <thead>
+            <tr>
+              <th>Obst</th>
+              <th>Gemüse</th>
+              <th>Fleisch</th>
+              <th>Milchprodukte</th>
+              <th>Backwaren</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><label for="ans11"></label><input id="ans11" type="text" onchange="processData()"></td>
+              <td><label for="ans12"></label><input id="ans12" type="text" onchange="processData()"></td>
+              <td><label for="ans13"></label><input id="ans13" type="text" onchange="processData()"></td>
+              <td><label for="ans14"></label><input id="ans14" type="text" onchange="processData()"></td>
+              <td><label for="ans15"></label><input id="ans15" type="text" onchange="processData()"></td>
+            </tr>
+            <tr>
+              <td><label for="ans16"></label><input id="ans16" type="text" onchange="processData()"></td>
+              <td><label for="ans17"></label><input id="ans17" type="text" onchange="processData()"></td>
+              <td><label for="ans18"></label><input id="ans18" type="text" onchange="processData()"></td>
+              <td><label for="ans19"></label><input id="ans19" type="text" onchange="processData()"></td>
+              <td><label for="ans20"></label><input id="ans20" type="text" onchange="processData()"></td>
+            </tr>
+            <tr>
+              <td><label for="ans21"></label><input id="ans21" type="text" onchange="processData()"></td>
+              <td><label for="ans22"></label><input id="ans22" type="text" onchange="processData()"></td>
+              <td><label for="ans23"></label><input id="ans23" type="text" onchange="processData()"></td>
+              <td><label for="ans24"></label><input id="ans24" type="text" onchange="processData()"></td>
+              <td><label for="ans25"></label><input id="ans25" type="text" onchange="processData()"></td>
+            </tr>
+            <tr>
+              <td><label for="ans26"></label><input id="ans26" type="text" onchange="processData()"></td>
+              <td><label for="ans27"></label><input id="ans27" type="text" onchange="processData()"></td>
+              <td><label for="ans28"></label><input id="ans28" type="text" onchange="processData()"></td>
+              <td><label for="ans29"></label><input id="ans29" type="text" onchange="processData()"></td>
+              <td><label for="ans30"></label><input id="ans30" type="text" onchange="processData()"></td>
+            </tr>
+          </tbody>
+        </table>
+
+
+        <!-- ============================================---
+        <||                    QUESTION
+        <--- ============================================-->
+
+        <li class="question">Ergänzen Sie Verpackungen, Mengen und Maße.</li>
+        
+        <div><img width="90%" src="./img/quest2_4.png"></div>
+
+        <div>
+          <b>Antworten:</b>
+          <p><label for="ans31">1.</label><input id="ans31" type="text" onchange="processData()"></p>
+          <p><label for="ans32">2.</label><input id="ans32" type="text" onchange="processData()"></p>
+          <p><label for="ans33">3.</label><input id="ans33" type="text" onchange="processData()"></p>
+          <p><label for="ans34">4.</label><input id="ans34" type="text" onchange="processData()"></p>
+          <p><label for="ans35">5.</label><input id="ans35" type="text" onchange="processData()"></p>
+          <p><label for="ans36">6.</label><input id="ans36" type="text" onchange="processData()"></p>
+        </div>
+
+
+        <!-- ============================================---
+        <||                    QUESTION
+        <--- ============================================-->
+
+        <li class="question">Schreiben Sie anders.</li>
+
+        <div><img width="90%" src="./img/quest3_4.png"></div>
+
+        <div class="translations">
+          <b>Antworten:</b>
+          <p><label for="ans38">1.</label><input id="ans38" type="text" onchange="processData()"></p>
+          <p><label for="ans39">2.</label><input id="ans39" type="text" onchange="processData()"></p>
+          <p><label for="ans40">3.</label><input id="ans40" type="text" onchange="processData()"></p>
+          <p><label for="ans41">4.</label><input id="ans41" type="text" onchange="processData()"></p>
+          <p><label for="ans42">5.</label><input id="ans42" type="text" onchange="processData()"></p>
+        </div>
+
+        <!-- ============================================---
+        <||                    QUESTION
+        <--- ============================================-->
+
+        <li class="question">Ergänzen Sie den bestimmten Artikel im Akkusativ.</li>
+
+        <div><img width="90%" src="./img/quest4_4.png"></div>
+        
+        <div>
+          <p><label for="ans43">1.</label><input id="ans43" type="text" onchange="processData()"></p>
+          <p><label for="ans44">2.</label><input id="ans44" type="text" onchange="processData()"></p>
+          <p><label for="ans45">3.</label><input id="ans45" type="text" onchange="processData()"></p>
+          <p><label for="ans46">4.</label><input id="ans46" type="text" onchange="processData()"></p>
+          <p><label for="ans47">5.</label><input id="ans47" type="text" onchange="processData()"></p>
+          <p><label for="ans48">6.</label><input id="ans48" type="text" onchange="processData()"></p>
+        </div>
+
+        <!-- ============================================---
+        <||                    QUESTION
+        <--- ============================================-->
+
+        <li class="question">Ergänzen Sie den Dialog.</li>
+
+        <div><img width="90%" src="./img/quest5_4.png"></div>
+        
+        <div>
+          <p><label for="ans49">1.</label><input id="ans49" type="text" onchange="processData()"></p>
+          <p><label for="ans50">2.</label><input id="ans50" type="text" onchange="processData()"></p>
+          <p><label for="ans51">3.</label><input id="ans51" type="text" onchange="processData()"></p>
+          <p><label for="ans52">4.</label><input id="ans52" type="text" onchange="processData()"></p>
+          <p><label for="ans53">5.</label><input id="ans53" type="text" onchange="processData()"></p>
+          <p><label for="ans54">6.</label><input id="ans54" type="text" onchange="processData()"></p>
+          <p><label for="ans55">7.</label><input id="ans55" type="text" onchange="processData()"></p>
+        </div>
+
+        <!-- ============================================---
+        <||                    QUESTION
+        <--- ============================================-->
+
+        <li class="question">Welche Antwort passt?</li>
+
+        <fieldset>
+          <legend>1. Wer kommt dran?</legend>
+        
+          <div>
+            <input type="radio" id="ans56" name="1. Wer kommt dran?" value="Ja, Moment"/>
+            <label for="ans56">Ja, Moment</label>
+          
+            <input type="radio" id="ans57" name="1. Wer kommt dran?" value="Ich, bitte."/>
+            <label for="ans57">Ich, bitte.</label>
+
+            <input type="radio" id="ans58" name="1. Wer kommt dran?" value="Das ist alles."/>
+            <label for="ans58">Das ist alles.</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>2. Brauchen Sie eine Tüte?</legend>
+        
+          <div>
+            <input type="radio" id="ans59" name="2. Brauchen Sie eine Tüte?" value="Ja, danke."/>
+            <label for="ans59">Ja, danke.</label>
+          
+            <input type="radio" id="ans60" name="2. Brauchen Sie eine Tüte?" value="Ja, lecker."/>
+            <label for="ans60">Ja, lecker.</label>
+
+            <input type="radio" id="ans61" name="2. Brauchen Sie eine Tüte?" value="Prost."/>
+            <label for="ans61">Prost.</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>3. Guten Appetit!</legend>
+        
+          <div>
+            <input type="radio" id="ans62" name="3. Guten Appetit!" value="Ja, bitte."/>
+            <label for="ans62">Ja, bitte.</label>
+          
+            <input type="radio" id="ans63" name="3. Guten Appetit!" value="Nein, danke."/>
+            <label for="ans63">Nein, danke.</label>
+
+            <input type="radio" id="ans64" name="3. Guten Appetit!" value="Danke, gleichfalls!"/>
+            <label for="ans64">Danke, gleichfalls!</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>4. Möchtest du noch ein Würstchen?</legend>
+        
+          <div>
+            <input type="radio" id="ans65" name="4. Möchtest du noch ein Würstchen?" value="Ja, gerne."/>
+            <label for="ans65">Ja, gerne.</label>
+          
+            <input type="radio" id="ans66" name="4. Möchtest du noch ein Würstchen?" value="Hier, bitte."/>
+            <label for="ans66">Hier, bitte.</label>
+
+            <input type="radio" id="ans67" name="4. Möchtest du noch ein Würstchen?" value="Mahlzeit."/>
+            <label for="ans67">Mahlzeit.</label>
+          </div>
+        </fieldset>
+
+        <!-- ============================================---
+        <||                    QUESTION
+        <--- ============================================-->
+
+
+        <li class="question">Übersetzen Sie die folgenden Sätze</li>
+        
+        <div class="translations">
+          <p><label for="ans68">1.</label> La doctora compra un pastel con una botella de agua</p>
+          <input id="ans68" type="text" onchange="processData()">
+          <p><label for="ans69">2.</label> El ingeniero tiene una invitación para mi amigo, Karl, para una parrillada</p>
+          <input id="ans69" type="text" onchange="processData()">
+          <p><label for="ans70">3.</label> El aceite y el agua están en la caja, con el vinagre y los huevos</p>
+          <input id="ans70" type="text" onchange="processData()">
+          <p><label for="ans71">4.</label> La carnicería es un lugar grande, está al lado del municipio.</p>
+          <input id="ans71" type="text" onchange="processData()">
+          <p><label for="ans72">5.</label> Para la iglesia hay un día en la semana. Ahí tú tomas vino y galletas!</p>
+          <input id="ans72" type="text" onchange="processData()">
+        </div>
+        
+      </ol>
+      
+      
+      
+   </main>
+  <div class="d-flex"><button id="btn-submit" class="btn btn-success" onclick="generatePDF()">Save and Submit Test</button></div>
+</body>
+<script>
+   var answers = document.querySelectorAll('input:not([id="studentName"])');
+   var labels = document.querySelectorAll("label");
+
+   var date = new Date();
+   var hours = date.getHours();
+   var minutes = date.getMinutes();
+
+   const timer = setTimeout(disableSubmit, 3600000);
+
+   function disableSubmit() {
+      document.getElementById("btn-submit").disabled = true;
+   }
+
+   processData();
+</script>
+</html>
