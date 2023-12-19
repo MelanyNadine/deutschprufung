@@ -1,0 +1,80 @@
+body{
+  background-color: lightgrey;
+}
+
+main{
+  max-width: 84vw;
+  background-color: white;
+  margin: 4vw auto;
+  padding: 8vw;
+}
+
+p, li, td, b {
+  font-size: 1.3vw;
+  margin: 0
+}
+
+input {
+  margin: 0.3vw 1vw;
+  padding: 0;
+}
+
+fieldset{
+  font-size: 1.3vw;
+  border: none;
+}
+
+legend{
+  font-size: 1.4vw;
+  font-weight: 500;
+  margin-top: 1.5vw;
+}
+
+.buttons-container{
+  display:flex;
+  justify-content: center;
+  margin: 0 0 6vw 0;
+}
+
+.subtitle {
+  font-weight: bold;
+  margin-top: 2vw;
+}
+
+.question {
+  font-weight: 700;
+  margin: 2vw 0 1vw 0;
+}
+
+.translations input{
+  width: 30vw;
+}
+
+.middlesize {
+  width: 33vw;
+}
+
+#btn-submit{
+  margin: 0 auto 5vw auto;
+}
+
+.letter-pick input{
+  width: 7vw;
+}
+
+.short{
+  width: 7vw;
+}
+
+.numbers-input input{
+  width: 3vw;
+}
+
+.translations input{
+  width: 50vw;
+}
+
+.classification-table input, th{
+  max-width: 10vw;
+  text-align: center;
+}
