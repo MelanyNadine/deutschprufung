@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Deutschprüfung A1 - Unit 6</title>
+  <link href="../style.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="../script.js"></script>
+</head>
+<body>
+
+   <main>
+      <h4>Deutschprüfung für das Niveau A1, Unit <span id="unit">6</span></h4>
+
+      <b>Vor- und Nachname:</b><input id="studentName" type="text">
+
+      <ol>
+
+        <!-- ============================================---
+        <||                    QUESTION
+        <--- ============================================-->
+
+        <li class="question">Klassifizieren Sie die folgenden Präpositionen: Akkusativ oder Dativ</li>
+
+        <fieldset>
+          <legend>außer</legend>
+        
+          <div>
+            <input type="radio" id="ans1.1" name="außer" value="Akkusativ"/>
+            <label for="ans1.1">Akkusativ</label>
+          
+            <input type="radio" id="ans1.2" name="außer" value="Dativ"/>
+            <label for="ans1.2">Dativ</label>
+          </div>
+        </fieldset>
+        
+        <fieldset>
+          <legend>durch</legend>
+        
+          <div>
+            <input type="radio" id="ans2.1" name="durch" value="Akkusativ"/>
+            <label for="ans2.1">Akkusativ</label>
+          
+            <input type="radio" id="ans2.2" name="durch" value="Dativ"/>
+            <label for="ans2.2">Dativ</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>bei</legend>
+        
+          <div>
+            <input type="radio" id="ans3.1" name="bei" value="Akkusativ"/>
+            <label for="ans3.1">Akkusativ</label>
+          
+            <input type="radio" id="ans3.2" name="bei" value="Dativ"/>
+            <label for="ans3.2">Dativ</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>aus</legend>
+        
+          <div>
+            <input type="radio" id="ans4.1" name="aus" value="Akkusativ"/>
+            <label for="ans4.1">Akkusativ</label>
+          
+            <input type="radio" id="ans4.2" name="aus" value="Dativ"/>
+            <label for="ans4.2">Dativ</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>ohne</legend>
+        
+          <div>
+            <input type="radio" id="ans5.1" name="ohne" value="Akkusativ"/>
+            <label for="ans5.1">Akkusativ</label>
+          
+            <input type="radio" id="ans5.2" name="ohne" value="Dativ"/>
+            <label for="ans5.2">Dativ</label>
+          </div>
+        </fieldset>
+
+        <!-- ============================================---
+        <||                    QUESTION
+        <--- ============================================-->
+
+        <li class="question">Was passt nicht? Streichen Sie durch.</li>
+
+        <div><img width="90%" src="./img/u6_quest1.png"></div>
+
+        <fieldset>
+          <div>
+            <label>1. </label>
+
+            <input type="radio" id="ans6" name="1. " value="Messer"/>
+            <label for="ans6">Messer</label>
+          
+            <input type="radio" id="ans7" name="1. " value="Gabel"/>
+            <label for="ans7">Gabel</label>
+
+            <input type="radio" id="ans8" name="1. " value="Schnitzel"/>
+            <label for="ans8">Schnitzel</label>
+
+            <input type="radio" id="ans9" name="1. " value="Löffel"/>
+            <label for="ans9">Löffel</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <div>
+            <label>2. </label>
+
+            <input type="radio" id="ans10" name="2. " value="Kaffeehaus"/>
+            <label for="ans10">Kaffeehaus</label>
+          
+            <input type="radio" id="ans11" name="2. " value="Strandbar"/>
+            <label for="ans11">Strandbar</label>
+
+            <input type="radio" id="ans12" name="2. " value="Restaurant"/>
+            <label for="ans12">Restaurant</label>
+
+            <input type="radio" id="ans13" name="2. " value="Kino"/>
+            <label for="ans13">Kino</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <div>
+            <label>3. </label>
+
+            <input type="radio" id="ans14" name="3. " value="Wasser"/>
+            <label for="ans14">Wasser</label>
+          
+            <input type="radio" id="ans15" name="3. " value="Pizza"/>
+            <label for="ans15">Pizza</label>
+
+            <input type="radio" id="ans16" name="3. " value="Limonade"/>
+            <label for="ans16">Limonade</label>
+
+            <input type="radio" id="ans17" name="3. " value="Apfelsaftschorle"/>
+            <label for="ans17">Apfelsaftschorle</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <div>
+            <label>4. </label>
+
+            <input type="radio" id="ans18" name="4. " value="Rechnung"/>
+            <label for="ans18">Rechnung</label>
+          
+            <input type="radio" id="ans19" name="4. " value="Speisekarte"/>
+            <label for="ans19">Speisekarte</label>
+
+            <input type="radio" id="ans20" name="4. " value="Adresse"/>
+            <label for="ans20">Adresse</label>
+
+            <input type="radio" id="ans21" name="4. " value="Bestellung"/>
+            <label for="ans21">Bestellung</label>
+          </div>
+        </fieldset>
+        
+        <!-- ============================================---
+        <||                    QUESTION
+        <--- ============================================-->
+
+        <li class="question">Dialog A oder Dialog B? Ordnen Sie zu und schreiben Sie die Dialoge..</li>
+        
+        <div><img width="90%" src="./img/u6_quest2.png"></div>
+
+        <div>
+          <table>
+            <thead>
+              <tr>
+                <th>Dialog A</th>
+                <th>Dialog B</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><label for="ans22"></label><input class="middlesize" id="ans22" type="text" onchange="processData()"></td>
+                <td><label for="ans23"></label><input class="middlesize"id="ans23" type="text" onchange="processData()"></td>
+              </tr>
+              <tr>
+                <td><label for="ans24"></label><input class="middlesize"id="ans24" type="text" onchange="processData()"></td>
+                <td><label for="ans25"></label><input class="middlesize"id="ans25" type="text" onchange="processData()"></td>
+              </tr>
+              <tr>
+                <td><label for="ans26"></label><input class="middlesize"id="ans26" type="text" onchange="processData()"></td>
+                <td><label for="ans27"></label><input class="middlesize"id="ans27" type="text" onchange="processData()"></td>
+              </tr>
+              <tr>
+                <td><label for="ans28"></label><input class="middlesize"id="ans28" type="text" onchange="processData()"></td>
+                <td><label for="ans29"></label><input class="middlesize"id="ans29" type="text" onchange="processData()"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+    
+        <li class="question">Ergänzen Sie haben und sein im Präteritum.</li>
+        
+        <div><img width="90%" src="./img/u6_quest3.png"></div>
+        
+        <div>
+          <p><label for="ans30">1.</label><input id="ans30" type="text" onchange="processData()"></p>
+          <p><label for="ans31">2.</label><input id="ans31" type="text" onchange="processData()"></p>
+          <p><label for="ans32">3.</label><input id="ans32" type="text" onchange="processData()"></p>
+          <p><label for="ans33">4.</label><input id="ans33" type="text" onchange="processData()"></p>
+          <p><label for="ans34">5.</label><input id="ans34" type="text" onchange="processData()"></p>
+          <p><label for="ans35">6.</label><input id="ans35" type="text" onchange="processData()"></p>
+          <p><label for="ans36">7.</label><input id="ans36" type="text" onchange="processData()"></p>
+          <p><label for="ans37">8.</label><input id="ans37" type="text" onchange="processData()"></p>
+        </div>
+
+        <!-- ============================================---
+        <||                    QUESTION
+        <--- ============================================-->
+
+
+        <li class="question">Schreiben Sie die Antworten wie im Beispiel.</li>
+        
+        <div><img width="90%" src="./img/u6_quest4.png"></div>
+        
+        <div>
+          <p><label for="ans38">1.</label><input id="ans38" type="text" onchange="processData()"></p>
+          <p><label for="ans39">2.</label><input id="ans39" type="text" onchange="processData()"></p>
+          <p><label for="ans40">3.</label><input id="ans40" type="text" onchange="processData()"></p>
+          <p><label for="ans41">4.</label><input id="ans41" type="text" onchange="processData()"></p>
+          <p><label for="ans41">5.</label><input id="ans41" type="text" onchange="processData()"></p>
+        </div>
+
+        <!-- ============================================---
+        <||                    QUESTION
+        <--- ============================================-->
+
+
+        <li class="question">Was ist richtig? Kreuzen Sie an.</li>
+        
+        <div><img width="90%" src="./img/u1_quest4.png"></div>
+
+        <fieldset>
+          <legend>Gabi und Felix, ich rufe ______ später an, okay? </legend>
+        
+          <div>
+            <input type="radio" id="ans42" name="Gabi und Felix, ich rufe " value="euch"/>
+            <label for="ans42">euch</label>
+          
+            <input type="radio" id="ans43" name="Gabi und Felix, ich rufe " value="ihr"/>
+            <label for="ans43">ihr</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Mein Vater ist krank. Ich will ______ gleich besuchen</legend>
+        
+          <div>
+            <input type="radio" id="ans44" name="Mein Vater ist krank. Ich will " value="dich"/>
+            <label for="ans44">dich</label>
+          
+            <input type="radio" id="ans45" name="Mein Vater ist krank. Ich will " value="ihn"/>
+            <label for="ans45">ihn</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Wir möchten nichts essen. Die Pommes sind nicht für ______ .</legend>
+        
+          <div>
+            <input type="radio" id="ans46" name="Wir möchten nichts essen. Die Pommes sind nicht für " value="sie"/>
+            <label for="ans46">sie</label>
+          
+            <input type="radio" id="ans47" name="Wir möchten nichts essen. Die Pommes sind nicht für " value="uns"/>
+            <label for="ans47">uns</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Ich will auch nach Hamburg. Kannst du ______ mitnehmen?</legend>
+        
+          <div>
+            <input type="radio" id="ans48" name="Ich will auch nach Hamburg. Kannst du " value="mich"/>
+            <label for="ans48">mich</label>
+          
+            <input type="radio" id="ans49" name="Ich will auch nach Hamburg. Kannst du " value="dich"/>
+            <label for="ans49">dich</label>
+          </div>
+        </fieldset>
+        
+        <!-- ============================================---
+        <||                    QUESTION
+        <--- ============================================-->
+
+
+        <li class="question">Schreiben Sie Sätze.</li>
+        
+        <div><img width="90%" src="./img/u6_quest6.png"></div>
+        
+        <div class="translations">
+          <p><label for="ans50">1.</label><input id="ans50" type="text" onchange="processData()"></p>
+          <p><label for="ans51">2.</label><input id="ans51" type="text" onchange="processData()"></p>
+          <p><label for="ans52">3.</label><input id="ans52" type="text" onchange="processData()"></p>
+          <p><label for="ans53">4.</label><input id="ans53" type="text" onchange="processData()"></p>
+          <p><label for="ans54">5.</label><input id="ans54" type="text" onchange="processData()"></p>
+        </div>
+
+      </ol>
+      
+      
+      
+   </main>
+  <div class="d-flex"><button id="btn-submit" class="btn btn-success" onclick="generatePDF()">Save and Submit Test</button></div>
+</body>
+<script></script>
+</html>
